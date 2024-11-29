@@ -134,30 +134,56 @@ router.get("/monthly-sales", async (req, res) => {
 });
 
 
-
-router.get('/firm-invoices', async (req, res) => {
+router.get("/firm-invoices", async (req, res) => {
   try {
-    const { firm } = req.query;
+    const { firm, startDate, endDate } = req.query;
 
-    // Validate the query parameter
-    if (!firm) {
-      return res.status(400).json({ success: false, message: 'Firm name is required' });
+    // Ensure required query parameters are present
+    if (!firm || !startDate || !endDate) {
+      return res.status(400).json({
+        success: false,
+        message: "Firm, start date, and end date are required.",
+      });
     }
 
-    // Fetch invoices based on buyer firm
-    const invoices = await Invoice.find({ buyerFirm: firm });
+    // Parse the start and end dates
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    end.setHours(23, 59, 59, 999); // Ensure the end date includes the full day
 
-    // If no invoices found, return a message
+    // Query the database
+    const invoices = await Invoice.find({
+      "buyerFirm": firm,
+      "date": { $gte: start, $lte: end },
+    });
+
     if (invoices.length === 0) {
-      return res.status(404).json({ success: false, message: 'No invoices found for this firm' });
+      return res.status(404).json({
+        success: false,
+        message: "No invoices found for the selected firm and date range.",
+      });
     }
 
-    res.json({ success: true, invoices });
+        // Calculate total sales
+    const totalSales = invoices.reduce(
+          (total, invoice) => total + invoice.totalAmount,
+          0
+        );
+
+    return res.status(200).json({
+      success: true,
+      invoices,
+      totalSales
+    });
   } catch (error) {
-    console.error('Error fetching firm invoices:', error);
-    res.status(500).json({ success: false, message: 'Error fetching invoices for this firm', error: error.message });
+    console.error("Error fetching firm invoices:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching invoices.",
+    });
   }
 });
+
 
 
 
@@ -176,10 +202,10 @@ router.get('/firms', async (req, res) => {
 
 // Route to get invoices by firm name
 router.get('/firm/:firmName', async (req, res) => {
-  const firmName = req.params.firmName; // Extract firm name from request params
+  const firmName = req.params.firmName; 
 
   try {
-      const invoices = await Invoice.find({ buyerFirm: firmName }, 'date buyerFirm totalAmount threads'); // Adjusted to include threads
+      const invoices = await Invoice.find({ buyerFirm: firmName }, 'date buyerFirm totalAmount threads'); 
       if (invoices.length === 0) {
           return res.status(404).json({ message: 'No invoices found for the selected firm.' });
       }
@@ -225,27 +251,6 @@ router.get('/threads', async (req, res) => {
   }
 });
 
-// // Create a new buyer firm
-// router.post('/buyers', async (req, res) => {
-//   try {
-//       const { name } = req.body;
-
-//       // Validate request body
-//       if (!name) {
-//           return res.status(400).json({ success: false, message: 'Name is required' });
-//       }
-
-//       const buyerFirm = new BuyerFirm({
-//           name,
-//       });
-
-//       await buyerFirm.save();
-//       res.status(201).json({ success: true, buyerFirm });
-//   } catch (error) {
-//       console.error('Error saving buyer firm:', error);
-//       res.status(500).json({ success: false, message: 'Error saving buyer firm', error: error.message });
-//   }
-// });
 
 // Create a new buyer firm
 router.post('/buyers', async (req, res) => {
@@ -286,18 +291,6 @@ router.get('/buyers/:name', async (req, res) => {
   }
 });
 
-
-// // Get all buyer firms
-// router.get('/buyers', async (req, res) => {
-//   try {
-//       const buyerFirms = await BuyerFirm.find();
-//       res.json({ success: true, buyerFirms });
-//   } catch (error) {
-//       console.error('Error fetching buyer firms:', error);
-//       res.status(500).json({ success: false, message: 'Error fetching buyer firms' });
-//   }
-// });
-
 // Get all buyer firms with full details
 router.get('/buyers', async (req, res) => {
   try {
@@ -308,8 +301,5 @@ router.get('/buyers', async (req, res) => {
       res.status(500).json({ success: false, message: 'Error fetching buyer firms', error: error.message });
   }
 });
-
-
-
 
 module.exports = router;

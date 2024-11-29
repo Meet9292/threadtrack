@@ -17,10 +17,10 @@ const MonthlySales = () => {
       const data = await response.json();
       setInvoices(data.invoices);
       setTotalSales(data.totalSales);
-      toast.success("Sales data fetched successfully!"); // Toast for success
+      toast.success("Sales data fetched successfully!"); 
     } catch (error) {
       console.error("Error fetching monthly sales:", error);
-      toast.error("Error fetching sales data. Please try again."); // Toast for error
+      toast.error("Error fetching sales data. Please try again."); 
     }
   };
 
@@ -30,41 +30,30 @@ const MonthlySales = () => {
   };
 
 
-
-
-
-
-
-
-
   const downloadPDF = () => {
     const doc = new jsPDF();
     const sellerFirmName = "Shree Ganesh Enterprise";
 
     const sellerAddress = "Factory Address: 169, 170, 171, 1st Floor, Kalathiya Corporation, Part-2, Diamond Nagar, Surat."; // Add your seller's address
-    const sellerContactNumber = "+91 98799 82259"; // Add your seller's contact information
+    const sellerContactNumber = "+91 98799 82259"; 
 
-    // Seller Firm Name (Center Aligned, Bold)
     doc.setFontSize(20);
-    doc.setFont("times", "bold"); // Use Times New Roman and set to bold
+    doc.setFont("times", "bold");
     doc.text(sellerFirmName, doc.internal.pageSize.getWidth() / 2, 20, {
         align: "center",
     });
 
-    // Date Range and Report Title
     const dateRangeText = `${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()} Sales Report`;
     doc.setFontSize(16);
-    doc.setFont("times", "normal"); // Reset to normal font
+    doc.setFont("times", "normal"); 
     doc.text(dateRangeText, doc.internal.pageSize.getWidth() / 2, 30, {
         align: "center",
     });
 
-    // Total Sales Calculation
     const totalSales = invoices.reduce((sum, invoice) => {
         return sum + invoice.threads.reduce((threadSum, thread) => threadSum + parseFloat(thread.total), 0);
     }, 0);
 
-    // Draw a line separating the header from the body
     doc.setLineWidth(0.5);
     doc.line(10, 35, doc.internal.pageSize.getWidth() - 10, 35); // Draw a line
 

@@ -10,7 +10,7 @@ const Home = () => {
     <div className="flex h-screen bg-gradient-to-r from-gray-100 to-gray-300 overflow-hidden"> {/* Smooth background gradient */}
       {/* Left side - Buttons */}
       <div className="w-1/2 flex flex-col justify-center items-start pl-24 space-y-8"> 
-        <h1 className="text-4xl font-semibold text-gray-800 mb-8">Welcome to ThreadTrack</h1> {/* Adding a heading */}
+        {/* <h1 className="text-4xl font-semibold text-gray-800 mb-8">Welcome to ThreadTrack</h1> Adding a heading */}
         <button
           onClick={() => navigate('/generate-invoice')}
           className="w-full px-8 py-4 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-2xl transition duration-300 transform hover:scale-105 text-xl font-medium tracking-wide">

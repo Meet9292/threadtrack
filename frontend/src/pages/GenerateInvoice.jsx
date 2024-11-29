@@ -24,7 +24,7 @@ const GenerateInvoice = () => {
         const options = response.data.threadTypes.map((thread) => ({
           value: thread.name,
           label: thread.name,
-          price: thread.pricePerKg, // Adjusting based on your structure
+          price: thread.pricePerKg, 
         }));
         setThreadTypeOptions(options);
       } catch (error) {
@@ -49,13 +49,12 @@ const GenerateInvoice = () => {
     fetchThreadTypes();
   }, []);
 
-  // Calculate total based on quantity and price per kg
   const calculateTotal = (index) => {
     const updatedThreads = [...threads];
     const quantity = updatedThreads[index].quantity;
     const price = updatedThreads[index].pricePerKg;
 
-    const calculatedKgs = quantity * 0.25; // Assuming 1 unit = 0.25 kgs
+    const calculatedKgs = quantity * 0.25; 
     updatedThreads[index].kgs = calculatedKgs;
     updatedThreads[index].total = calculatedKgs * price;
     setThreads(updatedThreads);
@@ -76,7 +75,7 @@ const GenerateInvoice = () => {
       updatedThreads[index][field] = value;
     }
 
-    calculateTotal(index); // Recalculate total after any field change (including pricePerKg)
+    calculateTotal(index); 
     setThreads(updatedThreads);
   };
 
@@ -91,27 +90,6 @@ const GenerateInvoice = () => {
     setThreads(threads.filter((_, i) => i !== index));
   };
 
-  // Add new buyer firm to the database
-  // const handleAddBuyerFirm = async () => {
-  //   if (newBuyerFirm.trim() === "") {
-  //     toast.error("Please enter a valid firm name.");
-  //     return;
-  //   }
-
-  //   const newFirmOption = { value: newBuyerFirm, label: newBuyerFirm };
-  //   setBuyerFirmOptions([...buyerFirmOptions, newFirmOption]);
-  //   setBuyerFirm(newBuyerFirm);
-  //   setNewBuyerFirm("");
-
-  //   try {
-  //     await axios.post("http://localhost:5000/api/buyers", {
-  //       name: newBuyerFirm,
-  //     });
-  //     toast.success("New buyer firm added successfully!");
-  //   } catch (error) {
-  //     toast.error("Error adding new firm: " + error.message);
-  //   }
-  // };
 
   const handleAddBuyerFirm = async () => {
     const newFirmName = prompt("Enter firm name:");
@@ -125,7 +103,7 @@ const GenerateInvoice = () => {
         return;
     }
 
-    // Contact number validation: ensure it's 10 digits and numeric
+    
     const contactNumberPattern = /^[0-9]{10}$/;
     if (!contactNumberPattern.test(newContactInfo)) {
         toast.error("Please enter a valid 10-digit contact number.");
@@ -149,8 +127,6 @@ const GenerateInvoice = () => {
     }
 };
 
-
-  // Add new thread type to the database
   const handleAddThreadType = async () => {
     const newThreadName = prompt("Enter new thread type name:");
     const newThreadPrice = prompt("Enter price per kg:");
@@ -175,7 +151,6 @@ const GenerateInvoice = () => {
     }
   };
 
-  // Submit the invoice data
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -192,47 +167,24 @@ const GenerateInvoice = () => {
         "http://localhost:5000/api/create",
         invoiceData
       );
-      // Check for successful status codes
       if (response.status === 200 || response.status === 201) {
         toast.success("Invoice generated successfully!");
         setTimeout(() => {
           navigate("/saved-invoices");
         }, 3000);
       } else {
-        // If response is not a success status, show an error
         toast.error("Error creating invoice: " + response.statusText);
       }
     } catch (error) {
-      // Show the error message if an error occurs during the request
       toast.error("Error during submission: " + error.message);
     } finally {
       setIsLoading(false);
     }
   };
-
-
-  // <div className="flex items-center mt-2">
-  //           <input
-  //             type="text"
-  //             value={newBuyerFirm}
-  //             onChange={(e) => setNewBuyerFirm(e.target.value)}
-  //             placeholder="Add New Firm Name"
-  //             className="border p-2 flex-grow rounded focus:outline-none focus:ring focus:ring-blue-300"
-  //           />
-  //           <button
-  //             type="button"
-  //             onClick={handleAddBuyerFirm}
-  //             className="ml-2 bg-green-600 text-white p-2 rounded-lg hover:bg-green-700 transition duration-300"
-  //           >
-  //             Add
-  //           </button>
-  //         </div>
-
   return (
     <div className="max-w-full mx-auto p-8 bg-white rounded-lg shadow-lg">
       <Toaster />
       <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Date Input */}
         <div className="flex flex-col mb-4">
           <label className="block text-gray-700 font-semibold">Date</label>
           <input
@@ -242,14 +194,9 @@ const GenerateInvoice = () => {
             className="border p-3 w-full rounded focus:outline-none focus:ring focus:ring-blue-300"
           />
         </div>
-
-
-        
-
-        {/* Buyer's Firm Name */}
         <div className="flex flex-col mb-4 overflow-visible">
           {" "}
-          {/* Added overflow-visible class */}
+        
           <label className="block text-gray-700 font-semibold">
             Buyer's Firm Name
           </label>
@@ -262,7 +209,7 @@ const GenerateInvoice = () => {
               (option) => option.value === buyerFirm
             )}
             placeholder="Select Firm"
-            menuPortalTarget={document.body} // Using portal for dropdown
+            menuPortalTarget={document.body} 
             className="basic-single"
             classNamePrefix="select"
           />
@@ -277,7 +224,7 @@ const GenerateInvoice = () => {
 </div>
         </div>
 
-        {/* Table for Thread Details */}
+        
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white shadow-md rounded-lg">
             <thead>
@@ -301,7 +248,7 @@ const GenerateInvoice = () => {
                 <tr key={index} className="bg-gray-50 border-b">
                   <td className="px-4 py-2 overflow-visible">
                     {" "}
-                    {/* Added overflow-visible class */}
+                   
                     <Select
                       options={threadTypeOptions}
                       onChange={(selected) =>
@@ -315,7 +262,7 @@ const GenerateInvoice = () => {
                         (option) => option.value === thread.threadType
                       )}
                       placeholder="Select Thread"
-                      menuPortalTarget={document.body} // Using portal for dropdown
+                      menuPortalTarget={document.body} 
                       className="basic-single"
                       classNamePrefix="select"
                     />
@@ -323,16 +270,16 @@ const GenerateInvoice = () => {
                   <td className="px-4 py-2">
                     <input
                       type="number"
-                      value={thread.quantity === 0 ? "" : thread.quantity} // Show empty input if quantity is 0
+                      value={thread.quantity === 0 ? "" : thread.quantity} 
                       onChange={(e) => {
                         let value = e.target.value;
 
-                        // Remove leading zero
+                        
                         if (value.startsWith("0")) {
-                          value = value.replace(/^0+/, ""); // Remove leading zeros
+                          value = value.replace(/^0+/, ""); 
                         }
 
-                        // Update the state with the new value, if valid
+                        
                         handleThreadChange(
                           index,
                           "quantity",
@@ -385,7 +332,7 @@ const GenerateInvoice = () => {
                     </button>
                     <button
                       type="button"
-                      onClick={() => handleAddThread(index)} // Add entry for another thread of the same type
+                      onClick={() => handleAddThread(index)} 
                       className="ml-2 bg-indigo-600 text-white p-2 rounded-lg hover:bg-indigo-700 transition duration-300"
                     >
                       Add
@@ -397,18 +344,17 @@ const GenerateInvoice = () => {
           </table>
         </div>
 
-        {/* Add New Thread Type Button */}
         <div className="flex justify-center mt-4">
           <button
             type="button"
-            onClick={handleAddThreadType} // Button to add new thread type in database
+            onClick={handleAddThreadType} 
             className="bg-blue-600 text-white p-4 rounded-lg hover:bg-blue-700 transition duration-300"
           >
             Add New Thread Type
           </button>
         </div>
 
-        {/* Generate Invoice Button */}
+     
         <div className="flex justify-center mt-6">
           <button
             type="submit"
