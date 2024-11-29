@@ -1,0 +1,20 @@
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+
+/* App.css */
+
+body {
+    background: linear-gradient(to right, #f5f5f5, #d1d1d1); /* Smooth gradient */
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif; /* Ensure uniform font */
+  }
+  
+  html, body, #root {
+    height: 100%; /* Ensure full page height */
+  }
+  
